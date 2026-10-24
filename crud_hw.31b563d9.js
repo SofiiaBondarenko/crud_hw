@@ -723,7 +723,7 @@ const getbtnRef = document.querySelector("#get-students-btn");
 const tbodyRef = document.querySelector("tbody");
 const addStudentRef = document.querySelector("#addStudent-btn");
 const backdropRef = document.querySelector(".backdrop");
-const addFormRef = document.querySelector("#add-student-form");
+// const modalFormRef = document.querySelector("#add-student-form");
 const modalFormRef = document.querySelector(".modal-form");
 let currentId = null;
 function renderTable() {
@@ -745,21 +745,9 @@ function closeModal() {
 backdropRef.addEventListener("click", (evt)=>{
     if (evt.target === backdropRef) closeModal();
 });
-addFormRef.addEventListener("submit", (evt)=>{
-    evt.preventDefault();
-    const skillsInput = addFormRef.querySelector("#skills").value;
-    const newStudent = {
-        name: addFormRef.querySelector("#name").value,
-        age: Number(addFormRef.querySelector("#age").value),
-        course: addFormRef.querySelector("#course").value,
-        skills: skillsInput.split(",").map((s)=>s.trim()),
-        email: addFormRef.querySelector("#email").value,
-        isEnrolled: addFormRef.querySelector("#isEnrolled").checked
-    };
-    (0, _postStudents.postStudents)(newStudent).then(()=>{
-        addFormRef.reset();
-        renderTable();
-    });
+addStudentRef.addEventListener('click', ()=>{
+    openModal();
+    modalFormRef.querySelector('.submit').textContent = 'Create';
 });
 tbodyRef.addEventListener("click", (evt)=>{
     if (evt.target.nodeName !== "BUTTON") return;
@@ -784,7 +772,7 @@ tbodyRef.addEventListener("click", (evt)=>{
 });
 modalFormRef.addEventListener("submit", (evt)=>{
     evt.preventDefault();
-    const id = modalFormRef.elements.id.value;
+    const id = Number(modalFormRef.elements.id.value);
     const skillsInput = modalFormRef.elements.skills.value;
     const studentData = {
         name: modalFormRef.elements.name.value,
@@ -798,14 +786,13 @@ modalFormRef.addEventListener("submit", (evt)=>{
         closeModal();
         renderTable();
     });
-    else (0, _updateStudents.updateStudents)(studentData, id).then(()=>{
-        closeModal();
-        renderTable();
-    });
-});
-addStudentRef.addEventListener('click', ()=>{
-    openModal();
-    modalFormRef.querySelector(".submit").textContent = "Create";
+    else {
+        targetId = isNaN(id) ? id : Number(id);
+        (0, _updateStudents.updateStudents)(studentData, targetId).then(()=>{
+            closeModal();
+            renderTable();
+        });
+    }
 });
 
 },{"./api/getStudents":"461i0","./api/updateStudents":"e9J9x","./api/deleteStudents":"at2F7","./api/postStudents":"aVyB2","./markup/renderMarkup":"daQTY"}],"461i0":[function(require,module,exports,__globalThis) {
@@ -897,7 +884,7 @@ function renderMarkup(items) {
             <td class='student-name'>${name}</td>
             <td class='student-age'>${age}</td>
             <td class='student-course'>${course}</td>
-            <td class='student-skills'>${skills}}</td>
+            <td class='student-skills'>${skills}</td>
             <td class='student-email'>${email}</td>
             <td class='student-status'>${isEnrolled ? "\u0437\u0430\u0440\u0430\u0445\u043E\u0432\u0430\u043D\u0438\u0439" : "\u043D\u0435\u0437\u0430\u0440\u0430\u0445\u043E\u0432\u0430\u043D\u0438\u0439"}</td>
             <td><button data-action="update">\u{43E}\u{43D}\u{43E}\u{432}\u{438}\u{442}\u{438}</button> <button data-action="delete">\u{432}\u{438}\u{434}\u{430}\u{43B}\u{438}\u{442}\u{438}</button></td>
