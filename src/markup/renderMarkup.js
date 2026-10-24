@@ -5,7 +5,7 @@ export function renderMarkup(items) {
             <td class='student-name'>${name}</td>
             <td class='student-age'>${age}</td>
             <td class='student-course'>${course}</td>
-            <td class='student-skills'>${skills}}</td>
+            <td class='student-skills'>${skills}</td>
             <td class='student-email'>${email}</td>
             <td class='student-status'>${isEnrolled ?'зарахований':'незарахований'}</td>
             <td><button data-action="update">оновити</button> <button data-action="delete">видалити</button></td>

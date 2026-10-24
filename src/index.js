@@ -9,7 +9,7 @@ const tbodyRef = document.querySelector("tbody");
 const addStudentRef = document.querySelector("#addStudent-btn");
 const backdropRef = document.querySelector(".backdrop");
 
-const addFormRef = document.querySelector("#add-student-form");
+// const modalFormRef = document.querySelector("#add-student-form");
 const modalFormRef = document.querySelector(".modal-form");
 
 let currentId = null;
@@ -37,25 +37,10 @@ function closeModal() {
 backdropRef.addEventListener("click", (evt) => {
   if (evt.target === backdropRef) closeModal();
 });
-
-addFormRef.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  
-  const skillsInput = addFormRef.querySelector("#skills").value;
-  const newStudent = {
-    name: addFormRef.querySelector("#name").value,
-    age: Number(addFormRef.querySelector("#age").value),
-    course: addFormRef.querySelector("#course").value,
-    skills: skillsInput.split(",").map((s) => s.trim()),
-    email: addFormRef.querySelector("#email").value,
-    isEnrolled: addFormRef.querySelector("#isEnrolled").checked,
-  };
-
-  postStudents(newStudent).then(() => {
-    addFormRef.reset();
-    renderTable();
-  });
-});
+addStudentRef.addEventListener('click', ()=>{
+  openModal()
+  modalFormRef.querySelector('.submit').textContent='Create'
+})
 
 tbodyRef.addEventListener("click", (evt) => {
   if (evt.target.nodeName !== "BUTTON") {
@@ -65,7 +50,7 @@ tbodyRef.addEventListener("click", (evt) => {
   const action = evt.target.dataset.action;
   const tr = evt.target.closest('tr');
   
-  const id = tr.querySelector(".student-id").textContent.trim();
+const id = tr.querySelector(".student-id").textContent.trim();
 
   if (action === 'delete') {
     if (confirm("Ви впевнені, що хочете видалити цього студента?")) {
@@ -91,7 +76,7 @@ tbodyRef.addEventListener("click", (evt) => {
 modalFormRef.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  const id = modalFormRef.elements.id.value;
+  const id = Number(modalFormRef.elements.id.value);
   const skillsInput = modalFormRef.elements.skills.value;
   
   const studentData = {
@@ -109,14 +94,10 @@ modalFormRef.addEventListener("submit", (evt) => {
       renderTable();
     });
   } else {
-    updateStudents(studentData, id).then(() => {
+    targetId = isNaN(id) ? id: Number(id);
+    updateStudents(studentData, targetId).then(() => {
       closeModal();
       renderTable();
     });
   }
-});
-
-addStudentRef.addEventListener('click', () => {
-    openModal();
-    modalFormRef.querySelector(".submit").textContent = "Create";
 });
